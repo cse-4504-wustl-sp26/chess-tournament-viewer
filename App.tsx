@@ -1,110 +1,52 @@
 
 import React, { useState, useEffect } from 'react';
+import { HashRouter, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import { Trophy, Users, LayoutDashboard, Settings, ChevronRight, Menu, Loader2 } from 'lucide-react';
-import { Round, PlayerStanding, TournamentConfig, ViewType } from './types';
+import { Round, TournamentConfig, ViewType } from './types';
 import { splitPgnGames, parseSingleGame, calculateStandings } from './utils/pgnParser';
 import RoundsView from './components/RoundsView';
 import StandingsView from './components/StandingsView';
 import SetupWizard from './components/SetupWizard';
+import localConfig from './config/tournament-config.json';
 
-const App: React.FC = () => {
-  const [view, setView] = useState<ViewType>('setup');
-  const [rounds, setRounds] = useState<Round[]>([]);
-  const [config, setConfig] = useState<TournamentConfig | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  useEffect(() => {
-    const loadTournamentData = async () => {
-      try {
-        setLoading(true);
-        
-        // 1. Fetch Configuration
-        const configRes = await fetch(`${import.meta.env.BASE_URL}config/tournament-config.json`);
-        if (!configRes.ok) throw new Error('Failed to load tournament-config.json');
-        const configData = await configRes.json();
-        setConfig(configData);
-
-        // Define data source URL (from config repo or fallback to local)
-        const DATA_BRANCH_URL = configData.tournamentRepo 
-          ? `https://raw.githubusercontent.com/${configData.tournamentRepo}/data/data/`
-          : `${import.meta.env.BASE_URL}data/`;
-
-        // 2. Fetch Manifest from Data Source
-        const manifestRes = await fetch(`${DATA_BRANCH_URL}manifest.json`);
-        if (!manifestRes.ok) throw new Error(`Failed to load manifest.json from ${DATA_BRANCH_URL}`);
-        const manifest = await manifestRes.json();
-
-        // 3. Fetch each PGN round from Data Source
-        const loadedRounds: Round[] = [];
-        for (const filename of manifest.rounds) {
-          const roundRes = await fetch(`${DATA_BRANCH_URL}${filename}`);
-          if (roundRes.ok) {
-            const content = await roundRes.text();
-            const roundMatch = filename.match(/round(\d+)/i);
-            const roundNumber = roundMatch ? parseInt(roundMatch[1]) : loadedRounds.length + 1;
-            
-            const gameBlocks = splitPgnGames(content);
-            const parsedGames = gameBlocks.map(block => parseSingleGame(block, roundNumber));
-            
-            loadedRounds.push({
-              number: roundNumber,
-              games: parsedGames
-            });
-          }
-        }
-        
-        setRounds(loadedRounds.sort((a, b) => a.number - b.number));
-      } catch (err: any) {
-        console.error(err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadTournamentData();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="h-screen w-screen flex flex-col items-center justify-center bg-gray-50">
-        <Loader2 className="w-12 h-12 text-blue-500 animate-spin mb-4" />
-        <p className="text-gray-500 font-medium">Loading Tournament Dashboard...</p>
-      </div>
-    );
-  }
-
-  if (error || !config) {
-    return (
-      <div className="h-screen w-screen flex flex-col items-center justify-center bg-gray-50 p-6 text-center">
-        <div className="bg-red-50 text-red-700 p-6 rounded-2xl border border-red-200 max-w-md">
-          <h2 className="text-xl font-bold mb-2">Initialization Error</h2>
-          <p className="mb-4">{error || 'Could not find configuration files.'}</p>
-          <p className="text-sm opacity-75">Ensure <b>config/tournament-config.json</b> and <b>data/manifest.json</b> exist in your project root.</p>
-        </div>
-      </div>
-    );
-  }
-
-  const standings = calculateStandings(rounds.flatMap(r => r.games));
-
-  const NavItem = ({ icon: Icon, label, id }: { icon: any, label: string, id: ViewType }) => (
-    <button
-      onClick={() => { setView(id); setIsSidebarOpen(false); }}
+const NavItem = ({ 
+  icon: Icon, 
+  label, 
+  to, 
+  setIsSidebarOpen 
+}: { 
+  icon: any, 
+  label: string, 
+  to: string,
+  setIsSidebarOpen: (v: boolean) => void 
+}) => {
+  const location = useLocation();
+  const isActive = location.pathname === to;
+  
+  return (
+    <Link
+      to={to}
+      onClick={() => setIsSidebarOpen(false)}
       className={`flex items-center w-full p-4 transition-colors ${
-        view === id 
+        isActive 
           ? 'text-white border-l-4' 
           : 'text-white hover:bg-white hover:bg-opacity-10'
       }`}
-      style={view === id ? { backgroundColor: 'rgba(255, 255, 255, 0.2)', borderLeftColor: '#fff' } : {}}
+      style={isActive ? { backgroundColor: 'rgba(255, 255, 255, 0.2)', borderLeftColor: '#fff' } : {}}
     >
       <Icon className="w-5 h-5 mr-3" />
       <span className="font-medium">{label}</span>
-      {view === id && <ChevronRight className="w-4 h-4 ml-auto" />}
-    </button>
+      {isActive && <ChevronRight className="w-4 h-4 ml-auto" />}
+    </Link>
   );
+};
+
+const AppLayout: React.FC<{
+  config: TournamentConfig;
+  rounds: Round[];
+  standings: any; 
+}> = ({ config, rounds, standings }) => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
@@ -142,10 +84,9 @@ const App: React.FC = () => {
           </div>
 
           <nav className="flex-1 mt-4">
-            <NavItem icon={Settings} label="Tournament Info" id="setup" />
-            <NavItem icon={LayoutDashboard} label="Tournament Rounds" id="rounds" />
-            <NavItem icon={Users} label="Current Standings" id="standings" />
-            
+            <NavItem icon={Settings} label="Tournament Info" to="/setup" setIsSidebarOpen={setIsSidebarOpen} />
+            <NavItem icon={LayoutDashboard} label="Tournament Rounds" to="/rounds" setIsSidebarOpen={setIsSidebarOpen} />
+            <NavItem icon={Users} label="Current Standings" to="/standings" setIsSidebarOpen={setIsSidebarOpen} />
           </nav>
 
           <div className="p-4 m-4 rounded-xl" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
@@ -169,25 +110,28 @@ const App: React.FC = () => {
 
         <div className="flex-1 overflow-y-auto p-4 lg:p-8">
           <div className="max-w-6xl mx-auto">
-            {view === 'setup' && (
-              <SetupWizard 
-                config={config} 
-                hasData={rounds.length > 0}
-              />
-            )}
-            {view === 'rounds' && (
-              <RoundsView 
-                rounds={rounds} 
-                primaryColor={config.primaryColor}
-                secondaryColor={config.secondaryColor}
-              />
-            )}
-            {view === 'standings' && (
-              <StandingsView 
-                standings={standings} 
-                primaryColor={config.primaryColor} 
-              />
-            )}
+            <Routes>
+              <Route path="/" element={<Navigate to="/setup" replace />} />
+              <Route path="/setup" element={
+                <SetupWizard 
+                  config={config} 
+                  hasData={rounds.length > 0}
+                />
+              } />
+              <Route path="/rounds" element={
+                <RoundsView 
+                  rounds={rounds} 
+                  primaryColor={config.primaryColor}
+                  secondaryColor={config.secondaryColor}
+                />
+              } />
+              <Route path="/standings" element={
+                <StandingsView 
+                  standings={standings} 
+                  primaryColor={config.primaryColor} 
+                />
+              } />
+            </Routes>
           </div>
         </div>
       </main>
@@ -195,4 +139,107 @@ const App: React.FC = () => {
   );
 };
 
+const App: React.FC = () => {
+  const [rounds, setRounds] = useState<Round[]>([]);
+  const [config, setConfig] = useState<TournamentConfig | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadTournamentData = async () => {
+      try {
+        setLoading(true);
+        
+        // Use the imported local config directly
+        const configData = localConfig as unknown as TournamentConfig;
+        setConfig(configData);
+
+        // 2. Fetch each PGN round from GitHub API (Data Branch)
+        if (configData && configData.rounds && configData.tournamentRepo) {
+          const loadedRounds: Round[] = [];
+          
+          for (const filename of configData.rounds) {
+            // Using GitHub API to fetch raw content from the 'data' branch
+            // Headers: Accept: application/vnd.github.v3.raw
+            // Add timestamp to prevent caching
+            const apiUrl = `https://api.github.com/repos/${configData.tournamentRepo}/contents/data/${filename}?ref=data&t=${new Date().getTime()}`;
+            
+            try {
+              const roundRes = await fetch(apiUrl, {
+                headers: {
+                  'Accept': 'application/vnd.github.v3.raw'
+                },
+                cache: 'no-store'
+              });
+              
+              const roundMatch = filename.match(/round(\d+)/i);
+              const roundNumber = roundMatch ? parseInt(roundMatch[1]) : loadedRounds.length + 1;
+              
+              if (roundRes.ok) {
+                const content = await roundRes.text();
+                
+                const gameBlocks = splitPgnGames(content);
+                const parsedGames = gameBlocks.map(block => parseSingleGame(block, roundNumber));
+                
+                loadedRounds.push({
+                  number: roundNumber,
+                  games: parsedGames
+                });
+              } else {
+                console.warn(`Could not load round ${roundNumber} from GitHub API: ${roundRes.statusText}`);
+                loadedRounds.push({
+                  number: roundNumber,
+                  games: []
+                });
+              }
+            } catch (e) {
+               console.warn(`Error fetching round ${filename}`, e);
+            }
+          }
+          
+          // Use order from config file
+          setRounds(loadedRounds);
+        } else if (!configData.tournamentRepo) {
+             setError("Tournament repository is not configured in tournament-config.json");
+        }
+      } catch (err: any) {
+        console.error(err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadTournamentData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="h-screen w-screen flex flex-col items-center justify-center bg-gray-50">
+        <Loader2 className="w-12 h-12 text-blue-500 animate-spin mb-4" />
+        <p className="text-gray-500 font-medium">Loading Tournament Dashboard...</p>
+      </div>
+    );
+  }
+
+  if (error || !config) {
+    return (
+      <div className="h-screen w-screen flex flex-col items-center justify-center bg-gray-50 p-6 text-center">
+        <div className="bg-red-50 text-red-700 p-6 rounded-2xl border border-red-200 max-w-md">
+          <h2 className="text-xl font-bold mb-2">Initialization Error</h2>
+          <p className="mb-4">{error || 'Could not find configuration files.'}</p>
+          <p className="text-sm opacity-75">Ensure <b>config/tournament-config.json</b> exists in your project root.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const standings = calculateStandings(rounds.flatMap(r => r.games));
+
+  return (
+    <HashRouter>
+      <AppLayout config={config} rounds={rounds} standings={standings} />
+    </HashRouter>
+  );
+};
 export default App;

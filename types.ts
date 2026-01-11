@@ -36,6 +36,7 @@ export interface TournamentConfig {
   type?: string;
   prizes?: string[];
   tournamentRepo?: string;
+  rounds: string[];
 }
 
 export type ViewType = 'rounds' | 'standings' | 'setup';

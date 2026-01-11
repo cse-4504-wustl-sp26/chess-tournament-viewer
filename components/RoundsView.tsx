@@ -41,7 +41,7 @@ const RoundsView: React.FC<RoundsViewProps> = ({ rounds, primaryColor, secondary
         <p className="text-gray-500">Official pairings and verified game results</p>
       </div>
 
-      {[...rounds].reverse().map(round => (
+      {rounds.map(round => (
         <div key={round.number} className="bg-white rounded-xl shadow-sm border overflow-hidden">
           <button 
             onClick={() => toggleRound(round.number)}
