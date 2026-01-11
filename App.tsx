@@ -26,15 +26,20 @@ const App: React.FC = () => {
         const configData = await configRes.json();
         setConfig(configData);
 
-        // 2. Fetch Manifest
-        const manifestRes = await fetch(`${import.meta.env.BASE_URL}data/manifest.json`);
-        if (!manifestRes.ok) throw new Error('Failed to load data/manifest.json');
+        // Define data source URL (from config repo or fallback to local)
+        const DATA_BRANCH_URL = configData.tournamentRepo 
+          ? `https://raw.githubusercontent.com/${configData.tournamentRepo}/data/data/`
+          : `${import.meta.env.BASE_URL}data/`;
+
+        // 2. Fetch Manifest from Data Source
+        const manifestRes = await fetch(`${DATA_BRANCH_URL}manifest.json`);
+        if (!manifestRes.ok) throw new Error(`Failed to load manifest.json from ${DATA_BRANCH_URL}`);
         const manifest = await manifestRes.json();
 
-        // 3. Fetch each PGN round
+        // 3. Fetch each PGN round from Data Source
         const loadedRounds: Round[] = [];
         for (const filename of manifest.rounds) {
-          const roundRes = await fetch(`${import.meta.env.BASE_URL}data/${filename}`);
+          const roundRes = await fetch(`${DATA_BRANCH_URL}${filename}`);
           if (roundRes.ok) {
             const content = await roundRes.text();
             const roundMatch = filename.match(/round(\d+)/i);
