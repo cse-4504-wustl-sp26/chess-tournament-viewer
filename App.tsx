@@ -21,20 +21,20 @@ const App: React.FC = () => {
         setLoading(true);
         
         // 1. Fetch Configuration
-        const configRes = await fetch('./config/tournament-config.json');
+        const configRes = await fetch(`${import.meta.env.BASE_URL}config/tournament-config.json`);
         if (!configRes.ok) throw new Error('Failed to load tournament-config.json');
         const configData = await configRes.json();
         setConfig(configData);
 
         // 2. Fetch Manifest
-        const manifestRes = await fetch('./data/manifest.json');
+        const manifestRes = await fetch(`${import.meta.env.BASE_URL}data/manifest.json`);
         if (!manifestRes.ok) throw new Error('Failed to load data/manifest.json');
         const manifest = await manifestRes.json();
 
         // 3. Fetch each PGN round
         const loadedRounds: Round[] = [];
         for (const filename of manifest.rounds) {
-          const roundRes = await fetch(`./data/${filename}`);
+          const roundRes = await fetch(`${import.meta.env.BASE_URL}data/${filename}`);
           if (roundRes.ok) {
             const content = await roundRes.text();
             const roundMatch = filename.match(/round(\d+)/i);
