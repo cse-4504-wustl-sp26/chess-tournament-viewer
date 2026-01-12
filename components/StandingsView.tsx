@@ -40,6 +40,7 @@ const StandingsView: React.FC<StandingsViewProps> = ({ standings, primaryColor }
       </div>
 
       {/* Top 3 Podium (Optional, show if query is empty) */}
+      {/*
       {!searchQuery && standings.length >= 3 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {[standings[1], standings[0], standings[2]].map((player, i) => {
@@ -67,7 +68,8 @@ const StandingsView: React.FC<StandingsViewProps> = ({ standings, primaryColor }
             );
           })}
         </div>
-      )}
+      )} 
+      */}
 
       {/* Standings Table */}
       <div className="bg-white rounded-2xl shadow-sm border overflow-hidden">
@@ -77,6 +79,7 @@ const StandingsView: React.FC<StandingsViewProps> = ({ standings, primaryColor }
               <tr className="bg-gray-50 border-b text-gray-500 text-xs uppercase tracking-wider font-bold">
                 <th className="px-6 py-4">Rank</th>
                 <th className="px-6 py-4">Player</th>
+                <th className="px-6 py-4">Rating</th>
                 <th className="px-6 py-4 text-center">Played</th>
                 <th className="px-6 py-4 text-center">W</th>
                 <th className="px-6 py-4 text-center">D</th>
@@ -99,6 +102,9 @@ const StandingsView: React.FC<StandingsViewProps> = ({ standings, primaryColor }
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap font-bold text-gray-800">
                     {player.name}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-500 font-medium font-mono text-xs">
+                    {player.rating || '-'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center text-gray-600">{player.played}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-center text-green-600 font-medium">{player.wins}</td>

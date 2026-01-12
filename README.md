@@ -25,8 +25,19 @@ Under "Organizations", create a new organizaton, with whatever name you want to 
    - Navigate to "Code"
    - Select config/tournament-config.json
    - Select "Edit this file" (a pencil icon on the top right of the file)
-   - Make the changes with specific values you want to use. The following fields are optional (remove them if not needed):
-      - sponsorName
+   - Make the changes with specific values you want to use.
+      - name - the name of the tournament
+      - primaryColor - Hexadecimal value for the color of the side menu bar. 
+      - secondaryColor - Hexadecimal value for the color used to highlight current move when walking through game moves on a chess board (if game moves are present in a pgn file)
+      - sponsorName - The name of the tournament sponsor. This is an optional field (remove if there is no sponsor)
+      - startDate - When does the tournament begin (date/time)
+      - endDate - When does the tournament end (date/time)
+      - location - Where does the tournament take place
+      - type - What is the style of the tournament (round robin, swiss, etc)
+      - prizes - What prizes are awarded for different places (doesn't have to be money, you can just specify 1st, 2nd, 3rd, or different categories of 1st, 2nd, 3rd)
+      - rounds - list of file names that the tournament director will upload for each round of the tournament.
+      - tournamentRepo - the name of the GitHub repository you created to host this tournament web site. This will be your organiationName/repoName (if you used organization) or your gitHubUserName/repoName (if you didn't use an organization)
+      - logoUrl - the URL of a tournament logo you want to use
    - Click on "Commit changes"
    - Click on "Commit changes" again
 

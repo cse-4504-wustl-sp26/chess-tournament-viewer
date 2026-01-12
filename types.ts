@@ -3,6 +3,8 @@ export interface Game {
   id: string;
   white: string;
   black: string;
+  whiteElo?: string;
+  blackElo?: string;
   result: '1-0' | '0-1' | '1/2-1/2' | '*' | '1-0 (Bye)' | '0-1 (Bye)';
   pgn: string;
   round: number;
@@ -18,6 +20,7 @@ export interface Round {
 export interface PlayerStanding {
   name: string;
   points: number;
+  rating?: string;
   played: number;
   wins: number;
   draws: number;

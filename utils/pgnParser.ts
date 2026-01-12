@@ -30,6 +30,8 @@ export const parseSingleGame = (pgn: string, roundNumber: number): Game => {
     id: `${roundNumber}-${header.White}-${header.Black}-${Date.now()}`,
     white: header.White || 'Unknown',
     black: header.Black || 'Unknown',
+    whiteElo: header.WhiteElo,
+    blackElo: header.BlackElo,
     result: (header.Result as any) || '*',
     pgn: pgn,
     round: roundNumber,
@@ -54,6 +56,10 @@ export const calculateStandings = (games: Game[]): PlayerStanding[] => {
   games.forEach(game => {
     const white = getOrInitPlayer(game.white);
     const black = getOrInitPlayer(game.black);
+
+    // Update ratings if available
+    if (game.whiteElo) white.rating = game.whiteElo;
+    if (game.blackElo) black.rating = game.blackElo;
 
     const isBye = game.result.includes('Bye');
 
