@@ -38,7 +38,6 @@ const RoundsView: React.FC<RoundsViewProps> = ({ rounds, primaryColor, secondary
     <div className="space-y-6">
       <div className="mb-8">
         <h2 className="text-3xl font-extrabold text-gray-900">Tournament Rounds</h2>
-        <p className="text-gray-500">Official pairings and verified game results</p>
       </div>
 
       {rounds.map(round => (

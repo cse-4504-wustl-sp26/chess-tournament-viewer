@@ -56,7 +56,6 @@ const StandingsView: React.FC<StandingsViewProps> = ({ standings, primaryColor }
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <div>
           <h2 className="text-3xl font-extrabold text-gray-900">Standings</h2>
-          <p className="text-gray-500">Real-time tournament rankings based on performance</p>
         </div>
         
         <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">

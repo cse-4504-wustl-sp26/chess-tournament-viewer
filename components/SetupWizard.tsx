@@ -13,7 +13,6 @@ const SetupWizard: React.FC<SetupWizardProps> = ({ config, hasData }) => {
     <div className="max-w-3xl mx-auto space-y-8 pb-12">
       <div className="text-center mb-10">
         <h2 className="text-4xl font-black text-gray-900 mb-2">Tournament Information</h2>
-        <p className="text-gray-500 text-lg">Official configuration and event details</p>
       </div>
 
       <section className="bg-white rounded-2xl shadow-sm border overflow-hidden">
@@ -28,8 +27,8 @@ const SetupWizard: React.FC<SetupWizardProps> = ({ config, hasData }) => {
               <p className="text-xl font-bold text-gray-800">{config.name}</p>
             </div>
             <div>
-              <label className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Primary Sponsor</label>
-              <p className="text-xl font-bold text-gray-800">{config.sponsorName || "Unspecified"}</p>
+              <label className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Organizer</label>
+              <p className="text-xl font-bold text-gray-800">{config.organizerName || config.sponsorName || "Unspecified"}</p>
             </div>
             {config.location && (
               <div className="flex items-start space-x-3">
@@ -64,7 +63,7 @@ const SetupWizard: React.FC<SetupWizardProps> = ({ config, hasData }) => {
                <div className="flex items-start space-x-3">
                  <Trophy className="w-5 h-5 text-gray-400 mt-1" />
                  <div>
-                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Prize Fund</label>
+                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Prizes</label>
                     <div className="space-y-1">
                       {config.prizes.map((prize, idx) => (
                         <p key={idx} className="text-sm font-medium text-gray-800">{prize}</p>

@@ -33,6 +33,7 @@ export interface TournamentConfig {
   secondaryColor?: string;
   logoUrl?: string;
   sponsorName?: string;
+  organizerName?: string;
   startDate?: string;
   endDate?: string;
   location?: string;

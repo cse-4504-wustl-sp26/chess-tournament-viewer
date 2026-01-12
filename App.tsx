@@ -91,7 +91,7 @@ const AppLayout: React.FC<{
 
           <div className="p-4 m-4 rounded-xl" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
             <p className="text-xs mb-1 uppercase tracking-wider font-semibold" style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Organized by</p>
-            <p className="text-sm font-medium truncate text-white">{config.sponsorName || "Anonymous"}</p>
+            <p className="text-sm font-medium truncate text-white">{config.organizerName || config.sponsorName || "Anonymous"}</p>
           </div>
         </div>
       </aside>

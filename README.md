@@ -30,6 +30,7 @@ Under "Organizations", create a new organizaton, with whatever name you want to 
       - primaryColor - Hexadecimal value for the color of the side menu bar. 
       - secondaryColor - Hexadecimal value for the color used to highlight current move when walking through game moves on a chess board (if game moves are present in a pgn file)
       - sponsorName - The name of the tournament sponsor. This is an optional field (remove if there is no sponsor)
+      - organizerName - The name of the tournament organizer
       - startDate - When does the tournament begin (date/time)
       - endDate - When does the tournament end (date/time)
       - location - Where does the tournament take place
