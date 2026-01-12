@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { PlayerStanding } from '../types';
-import { Search, Trophy, TrendingUp, Medal } from 'lucide-react';
+import { Search, Trophy, TrendingUp, Medal, Download } from 'lucide-react';
 
 interface StandingsViewProps {
   standings: PlayerStanding[];
@@ -17,6 +17,40 @@ const StandingsView: React.FC<StandingsViewProps> = ({ standings, primaryColor }
     );
   }, [standings, searchQuery]);
 
+  const handleDownloadCSV = () => {
+    // Define headers
+    const headers = ['Rank', 'Player', 'Rating', 'Played', 'Wins', 'Draws', 'Losses', 'Points'];
+    
+    // Map data to CSV rows
+    const rows = filteredStandings.map((player, index) => [
+      index + 1,
+      `"${player.name}"`, // Quote names to handle potential commas
+      player.rating || '',
+      player.played,
+      player.wins,
+      player.draws,
+      player.losses,
+      player.points
+    ]);
+
+    // Combine headers and rows
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.join(','))
+    ].join('\n');
+
+    // Create blob and download link
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `tournament_standings_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
@@ -25,17 +59,28 @@ const StandingsView: React.FC<StandingsViewProps> = ({ standings, primaryColor }
           <p className="text-gray-500">Real-time tournament rankings based on performance</p>
         </div>
         
-        <div className="relative w-full md:w-80">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <input 
-            type="text"
-            placeholder="Search player name..."
-            className="w-full pl-10 pr-4 py-3 bg-white border rounded-xl shadow-sm focus:ring-2 outline-none transition-all"
-            // Fixed: Changed 'ringColor' (which is not a valid CSS property) to 'borderColor'
+        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+          <button
+            onClick={handleDownloadCSV}
+            className="flex items-center justify-center px-4 py-3 bg-white border rounded-xl shadow-sm hover:bg-gray-50 transition-colors text-gray-700 font-medium whitespace-nowrap"
             style={{ borderColor: primaryColor }}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+          >
+            <Download className="w-5 h-5 mr-2" />
+            Export CSV
+          </button>
+          
+          <div className="relative flex-1 sm:w-80">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <input 
+              type="text"
+              placeholder="Search player name..."
+              className="w-full pl-10 pr-4 py-3 bg-white border rounded-xl shadow-sm focus:ring-2 outline-none transition-all"
+              // Fixed: Changed 'ringColor' (which is not a valid CSS property) to 'borderColor'
+              style={{ borderColor: primaryColor }}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
         </div>
       </div>
 
