@@ -1,20 +1,24 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Chess Tournament Web Site Template
 
-# Run and deploy your AI Studio app
+## How to use this template to host a tournament web site
 
-This contains everything you need to run your app locally.
+1. Create a new repository from this template 
+   - Click on "Use this template" button, on the top right
+   - Select "Create new repository"
+   - Give your new repository a name
+   - Select "include all branches"
+1. When your repository gets created, navigate to "Settings" within your repository, to enable GitHub Pages
+   - Select "Pages"
+   - Under "Build and Deployment", in Source drop-down, select "GitHub Actions"
+1. Update the tournament configuration in the config/tournament-config.json file with your tournament specific values. The following fields are optional (remove them if not needed):
+   - sponsorName
 
-View your app in AI Studio: https://ai.studio/apps/temp/1
 
-## Run Locally
+## Run Locally (for developers)
 
 **Prerequisites:**  Node.js
 
-
 1. Install dependencies:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
+1. Run the app:
    `npm run dev`
