@@ -2,6 +2,14 @@
 
 ## How to use this template to host a tournament web site
 
+### Create a GitHub account (if you don't have one)
+If you don't have a GitHub account, create one. Go to github.com and sign up for a free account.
+
+### Create a GitHub organization (optional, but recommended)
+If you want to host your tournament web site under one organization, it's beneficial to create a GitHub organization. Otherwise, the web sites will be tied to your GitHub username.
+
+Under "Organizations", create a new organizaton, with whatever name you want to give it.
+
 ### Deploy the web site before the tournament
 1. Create a new repository from this template 
    - Click on "Use this template" button, on the top right
@@ -33,6 +41,8 @@ If you need to update the tournament information, go back and update the values 
 
 ### Update the data during the tournament
 The pgn files for the tournament are stored in the 'data' branch of your repository in a data directory. To open the "data" branch, navigate to "Code". You will see a drop down menu that says "main". Open that menu and switch to the "data" branch. In that branch, open the data folder. Upload your pgn files here. When new files are added, you can refresh the web-site in your web browser and see the updated rounds.
+
+The person who will be uploading pgn files to the data branch will need to have "write" access to the tournament repository. To add users, navigate to "Settings", select "Collaborators and Teams"->"Add people". Find the GitHub username of the people that you want to add. Select "Write" for access level.
 
 ## Run Locally (for developers)
 
