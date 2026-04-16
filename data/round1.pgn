@@ -4,17 +4,11 @@
 [Round "-"]
 [White "Vic61799"]
 [Black "joebroshmo"]
-[Result "0-1"]
+[Result "1-0"]
 [WhiteElo "759"]
 [BlackElo "801"]
 [TimeControl "600+5"]
 [EndTime "2:47:54 GMT+0000"]
-[Termination "joebroshmo won by resignation"]
-
-1. d4 d5 2. Nf3 c5 3. c3 Qa5 4. e3 cxd4 5. Nxd4 Nf6 6. Bd3 Bg4 7. f3 Bh5 8. Nd2
-Nc6 9. O-O Qc7 10. e4 e6 11. Re1 Bd6 12. g3 Ne5 13. Qc2 Nxf3+ 14. N2xf3 dxe4 15.
-Nb5 Qb6+ 16. Be3 exd3 17. Qxd3 Bc5 18. Bxc5 Qxc5+ 19. Kg2 Rd8 20. Qe2 O-O 21. b4
-Qc6 22. Nxa7 Qxc3 23. Rac1 Qa3 24. Qc2 Qxf3+ 25. Kg1 Qd3 26. Rcd1 Qxc2 0-1
 
 [Event "Live Chess"]
 [Site "Chess.com"]
